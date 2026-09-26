@@ -22,3 +22,116 @@
 
 ש: איך ניתן ליצור קשר עם איש מבצעים או עם שירות הלקוחות של האפליקציה?
 ת: ניתן לפנות לשירות הלקוחות של האפליקציה דרך הצ'אט המובנה באפליקציה בכל שעות היממה (24/7), או לשלוח דואר אלקטרוני למקרי חירום בכתובת: urgent@flightapp.com.
+
+
+================================================================================
+FLIGHT BOOKING SYSTEM - SYSTEM DOCUMENTATION & TECHNICAL SPECIFICATION
+================================================================================
+
+1. SYSTEM OVERVIEW
+The Flight Booking System is an advanced software platform designed to manage flight scheduling, user registration, ticket bookings, purchase confirmations, and supply chain management for airline operations. The system bridges the gap between customers, flight operations, and external suppliers, ensuring smooth execution of standard and special flight-related requests.
+
+2. CORE SYSTEM CLASSES & ARCHITECTURE
+
+A. User Class (מחלקה לניהול משתמשים ומנויים)
+- Description: Manages all information related to registered users, customers, and members within the system. It handles personal identification, contact details, and account status, which directly affects system access rights and pricing tiers.
+- Attributes:
+  * id (String/Integer): Unique identification number (ID) of the user.
+  * name (String): Full name of the user.
+  * status (String): Current account status (e.g., active, VIP, suspended), affecting permissions and discounts.
+  * tel (String): Telephone / mobile contact number.
+  * address (String): Residential or billing address.
+  * email (String): User's email address used for notifications and login.
+- Methods:
+  * add(User): Registers a new user into the system database.
+  * update(User): Modifies existing user details, contact info, or status.
+  * recognize(User): Identifies and authenticates the user upon system login.
+
+B. Flight Class (מחלקת טיסות)
+- Description: Stores and manages comprehensive information regarding scheduled flights, including source, destination, timing, aircraft allocation, pilot assignment, and terminal status.
+- Attributes:
+  * id (String/Integer): Unique flight identifier number.
+  * numOfPlane (String/Integer): Aircraft identifier or plane model number.
+  * idPilot (String): Identification number of the assigned pilot.
+  * status (String): Flight status (e.g., on-time, delayed, cancelled, full occupancy).
+  * sourcePlace (String): Departure city or airport origin.
+  * DestPlace (String): Arrival destination city or airport.
+  * startTime (DateTime): Scheduled departure date and time.
+  * endTime (DateTime): Scheduled arrival date and time.
+  * terminal (String): Airport terminal assigned for departure/arrival.
+- Methods:
+  * search(Data): Filters and searches for specific flights based on user criteria (dates, origin, destination).
+  * add(Flight): Adds a new flight schedule to the system.
+  * delete(Flight): Removes a flight from the active schedule.
+  * update(Flight): Updates flight details such as delays, gate changes, or status.
+
+C. Order Class (מחלקת הזמנות רגילות)
+- Description: Manages standard ticket purchases and flight reservations made by registered users.
+- Attributes:
+  * numOfOrder (String/Integer): Unique identification number for the order.
+  * id (String): The ID of the user who made the order.
+  * numOfFlight (String): The ID of the booked flight.
+- Methods:
+  * add(): Creates and saves a new flight order.
+  * update(): Modifies order parameters.
+  * delete(): Cancels an existing order.
+
+D. SpecialOrder Class (מחלקת הזמנות מיוחדות - ירושה מ-Order)
+- Description: Handles special, customized requests and non-standard arrangements for flights or cargo that require special handling beyond a standard ticket booking.
+- Attributes (inherits Order attributes plus):
+  * numOfProduct (String): Identifier for the specific special product or service requested.
+  * amount (Integer): Quantity required.
+  * requirments (String): Detailed text describing special handling requirements or constraints.
+  * LastDate (DateTime): Final deadline for fulfilling or approving the special request.
+- Methods:
+  * add(): Submits a new special order request.
+  * update(): Updates the special requirements or quantities.
+  * delete(): Cancels the special order.
+
+E. PurchaseConfirmation Class (מחלקת אישור רכישה)
+- Description: Responsible for generating, tracking, and sending purchase verifications, payment receipts, and ticket confirmations to customers following a successful transaction.
+- Attributes:
+  * phoneNumber (String): Customer contact number for verification.
+  * price (Float): Total cost paid for the transaction.
+  * date (DateTime): Timestamp of the purchase confirmation.
+  * payment (String): Payment method used (e.g., credit card, digital wallet, bank transfer).
+  * orderNumber (String): Associated order reference number.
+  * id (String): User identification number.
+- Methods:
+  * create(): Generates the formal purchase confirmation document.
+  * send(): Transmits the confirmation to the customer via email or SMS.
+  * add(): Records the confirmation in the database.
+  * update(): Updates payment status or receipt details.
+  * delete(): Voids or revokes a confirmation record.
+
+F. Supplier Class (מחלקת ספקים)
+- Description: Manages external vendors, caterers, maintenance providers, and product suppliers associated with airline and flight services.
+- Attributes:
+  * id (String): Unique supplier identification number.
+  * product (String): Type of goods or services provided by the supplier.
+  * tel (String): Supplier contact telephone number.
+  * price (Float): Cost rate for products/services.
+- Methods:
+  * add(): Registers a new supplier in the system.
+  * update(): Updates supplier contact or pricing information.
+  * delete(): Removes a supplier from the active directory.
+
+G. InvitationToSupplier Class (מחלקת הזמנות רכש לספק)
+- Description: Tracks purchase orders, requisitions, and supply requests sent out to external vendors and suppliers.
+- Attributes:
+  * idSupplier (String): The target supplier's identification number.
+  * numOfProduct (String): Identifier for the requested product/item.
+  * amount (Integer): Quantity ordered from the supplier.
+  * LastDate (DateTime): Deadline for delivery by the supplier.
+- Methods:
+  * add(): Creates a new procurement order to a supplier.
+  * update(): Modifies item quantities or delivery deadlines.
+  * delete(): Cancels a supplier order.
+
+
+3. SYSTEM USE CASES AND WORKFLOWS
+
+- User Registration Flow: A new user enters their details (name, email, tel, address) via the `add(User)` method. The system records their profile. Upon returning, the system uses the `recognize(User)` method to authenticate them.
+- Flight Search & Booking Flow: Customers search for available flights using the `Flight.search()` method by providing criteria like origin, destination, and dates. Once selected, an `Order` is created, linked to the user's `id` and the flight's `numOfFlight`.
+- Payment & Confirmation: Following an order, the system invokes `PurchaseConfirmation.create()` and `PurchaseConfirmation.send()` to process the payment details and deliver the receipt to the user's phone or email.
+- Special Requests & Procurement: If a user requires custom arrangements, a `SpecialOrder` is logged with specific `requirments` and a `LastDate`. Simultaneously, the system manages required inventory through `Supplier` and `InvitationToSupplier` records to procure necessary resources.
