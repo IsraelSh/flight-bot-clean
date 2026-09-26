@@ -1,8 +1,8 @@
 import os
 
 import streamlit as st
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_classic.chains import create_retrieval_chain
+from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
