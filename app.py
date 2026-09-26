@@ -29,7 +29,7 @@ def load_knowledge_base():
 retriever = load_knowledge_base()
 
 # הגדרת המודל והשרשרת - שימוש ב-Gemini של גוגל
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 system_prompt = (
     "אתה נציג שירות לקוחות מקצועי ואדיב של אפליקציית טיסות."
     "ענה אך ורק על בסיס המידע המצורף. אם המידע לא קיים, אמור שאינך יודע."
