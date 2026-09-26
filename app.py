@@ -21,7 +21,7 @@ def load_knowledge_base():
     splits = text_splitter.split_documents(docs)
     
     # מעבר למודל ההטמעה של גוגל
-    embeddings = GoogleGenerativeAIEmbeddings(model="text-embedding-004")
+    embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-2-preview")
     vectorstore = FAISS.from_documents(splits, embeddings)
     return vectorstore.as_retriever()
 
