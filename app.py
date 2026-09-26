@@ -31,8 +31,8 @@ retriever = load_knowledge_base()
 # הגדרת המודל והשרשרת - שימוש ב-Gemini של גוגל
 llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash")
 system_prompt = (
-    "אתה נציג שירות לקוחות מקצועי ואדיב של אפליקציית טיסות."
-    "ענה אך ורק על בסיס המידע המצורף. אם המידע לא קיים, אמור שאינך יודע."
+    "You are a professional and courteous customer service representative for a flight app."
+    "Answer solely based on the attached information. If the information is not available, state that you do not know."
     "\n\n{context}"
 )
 prompt = ChatPromptTemplate.from_messages(
@@ -44,15 +44,15 @@ prompt = ChatPromptTemplate.from_messages(
 rag_chain = create_retrieval_chain(retriever, create_stuff_documents_chain(llm, prompt))
 
 # ----------------- ממשק המשתמש (Streamlit UI) ----------------- #
-st.title("✈️ עוזר אישי - טיסות")
-st.write("היי! אני העוזר החכם של האפליקציה. במה אוכל לעזור?")
+st.title("Personal Assistant – Flights ✈️")
+st.write("Hi! I'm Sun's smart assistant. How can I help?")
 
 # שורת הקלט של המשתמש
-user_question = st.text_input("שאל/י משהו (למשל: מה קורה אם הטיסה בוטלה?):")
+user_question = st.text_input("Ask something (e.g., what happens if the flight is cancelled?): ")
 
 if user_question:
     # הצגת הודעת טעינה בזמן שהמודל חושב
-    with st.spinner("מחפש תשובה במאגר..."):
+    with st.spinner("Looking for an answer..."):
         response = rag_chain.invoke({"input": user_question})
 
         # הצגת התשובה על המסך
