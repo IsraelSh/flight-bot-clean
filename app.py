@@ -50,7 +50,7 @@ st.write("Hi! I'm Sun's smart assistant. How can I help?")
 # שורת הקלט של המשתמש
 
 st.markdown("### 💡 Example questions you can try:")
-st.markdown("- What happens if the flight is cancelled?")
+st.markdown("- How can I cancel or update an existing order?")
 st.markdown("- What is the baggage allowance for carry-on luggage?")
 st.markdown("- How much does it cost to add an extra checked bag?")
 st.markdown("- Can I change my flight date and is there a fee?")
