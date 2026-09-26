@@ -6,12 +6,11 @@ from langchain_classic.chains.combine_documents import create_stuff_documents_ch
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# הגדרת מפתח ה-API של OpenAI (בסביבת ייצור נשמור את זה בטוח יותר)
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-
+# הגדרת מפתח ה-API של Google
+os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
 # פונקציה שטוענת את מאגר המידע פעם אחת ושומרת בזיכרון (Cache)
 @st.cache_resource
@@ -20,15 +19,17 @@ def load_knowledge_base():
     docs = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
-    embeddings = OpenAIEmbeddings()
+    
+    # מעבר למודל ההטמעה של גוגל
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     vectorstore = FAISS.from_documents(splits, embeddings)
     return vectorstore.as_retriever()
 
 
 retriever = load_knowledge_base()
 
-# הגדרת המודל והשרשרת
-llm = ChatOpenAI(model="gpt-3.5-turbo")
+# הגדרת המודל והשרשרת - שימוש ב-Gemini של גוגל
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 system_prompt = (
     "אתה נציג שירות לקוחות מקצועי ואדיב של אפליקציית טיסות."
     "ענה אך ורק על בסיס המידע המצורף. אם המידע לא קיים, אמור שאינך יודע."
