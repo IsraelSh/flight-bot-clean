@@ -56,5 +56,5 @@ if user_question:
         response = rag_chain.invoke({"input": user_question})
 
         # הצגת התשובה על המסך
-        st.success("תשובת העוזר:")
+        st.success("answer:")
         st.write(response["answer"])
